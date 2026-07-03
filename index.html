@@ -14,16 +14,14 @@
   --mono:'JetBrains Mono',monospace;
 }
 html,body{height:100%;background:var(--bg);overflow:hidden;}
-#app{display:grid;grid-template-rows:100px 1fr 88px;grid-template-columns:1fr 300px;height:100vh;font-family:var(--mono);}
+#app{display:grid;grid-template-rows:90px 1fr 88px;grid-template-columns:1fr 320px;height:100vh;font-family:var(--mono);}
 
-/* ── WAVEFORM / VIZ ── */
 #viz-wrap{grid-column:1/-1;grid-row:1;position:relative;background:#000;overflow:hidden;}
 #viz{position:absolute;top:0;left:0;width:100%;height:100%;display:block;}
 #waveform{position:absolute;top:0;left:0;width:100%;height:100%;display:block;pointer-events:none;}
 #playhead{position:absolute;top:0;bottom:0;width:2px;background:rgba(255,196,74,0.7);pointer-events:none;display:none;}
 #beat-flash{position:absolute;inset:0;background:rgba(165,127,255,0.04);pointer-events:none;opacity:0;transition:opacity 0.05s;}
 
-/* ── EDITOR ── */
 #editor-wrap{grid-column:1;grid-row:2;display:flex;flex-direction:column;border-right:1px solid var(--border);overflow:hidden;}
 .editor-bar{display:flex;align-items:center;gap:7px;padding:6px 12px;background:var(--panel);border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap;}
 .logo{font-size:12px;font-weight:500;letter-spacing:3px;color:var(--purple);}
@@ -34,28 +32,31 @@ html,body{height:100%;background:var(--bg);overflow:hidden;}
 .stop-btn:hover{border-color:var(--pink);color:var(--pink);}
 .export-btn{background:transparent;border:1px solid rgba(255,196,74,0.3);color:rgba(255,196,74,0.6);padding:4px 10px;border-radius:20px;cursor:pointer;font-family:var(--mono);font-size:10px;letter-spacing:2px;transition:all 0.15s;}
 .export-btn:hover{background:rgba(255,196,74,0.08);color:var(--amber);}
-.export-btn.recording{border-color:var(--amber);color:var(--amber);background:rgba(255,196,74,0.1);animation:pulse 1s infinite;}
+.export-btn.recording{border-color:var(--amber);color:var(--amber);animation:pulse 1s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
 .status{font-size:10px;letter-spacing:2px;color:var(--muted);margin-left:auto;}
-.status.ok{color:var(--green);}
-.status.err{color:var(--pink);}
-.status.rec{color:var(--amber);}
+.status.ok{color:var(--green);}.status.err{color:var(--pink);}.status.rec{color:var(--amber);}
 #editor{flex:1;width:100%;border:none;outline:none;resize:none;background:#07070e;color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.95;padding:16px 20px;caret-color:var(--green);tab-size:2;}
 #editor::selection{background:rgba(165,127,255,0.22);}
 #error-bar{font-size:10px;color:var(--pink);padding:4px 14px;background:rgba(255,50,100,0.05);border-top:1px solid rgba(255,50,100,0.12);min-height:20px;flex-shrink:0;font-family:var(--mono);}
 
-/* ── SIDEBAR ── */
 #sidebar{grid-column:2;grid-row:2;display:flex;flex-direction:column;overflow:hidden;background:var(--panel);}
 
-/* Sample upload zone */
-#sample-zone{
-  border-bottom:1px solid var(--border);padding:11px;flex-shrink:0;
-}
-.st{font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;}
-#drop-area{
-  border:1px dashed var(--border2);border-radius:6px;padding:10px;
-  text-align:center;cursor:pointer;transition:all 0.2s;position:relative;
-}
+/* tabs */
+.tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;}
+.tab{flex:1;padding:8px 4px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--purple);border-bottom-color:var(--purple);}
+
+.tab-content{display:none;flex:1;overflow-y:auto;flex-direction:column;}
+.tab-content.active{display:flex;}
+.tab-content::-webkit-scrollbar{width:3px;}
+.tab-content::-webkit-scrollbar-thumb{background:var(--border2);}
+
+/* sample panel */
+.sp{padding:11px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.st{font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:7px;}
+#drop-area{border:1px dashed var(--border2);border-radius:6px;padding:10px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;}
 #drop-area:hover,#drop-area.drag{border-color:var(--purple);background:rgba(165,127,255,0.05);}
 #drop-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
 .drop-text{font-size:10px;color:var(--muted);letter-spacing:1px;pointer-events:none;}
@@ -69,42 +70,61 @@ html,body{height:100%;background:var(--bg);overflow:hidden;}
 .fi-btn.active{border-color:var(--purple);color:var(--purple);background:rgba(165,127,255,0.08);}
 .vol-row{display:flex;align-items:center;gap:6px;margin-top:5px;}
 .vol-row label{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
-.vol-row input{flex:1;-webkit-appearance:none;appearance:none;height:2px;background:var(--border2);border-radius:1px;outline:none;cursor:pointer;}
+.vol-row input{flex:1;-webkit-appearance:none;height:2px;background:var(--border2);border-radius:1px;outline:none;cursor:pointer;}
 .vol-row input::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;border-radius:50%;background:var(--purple);cursor:pointer;}
 
-/* Chops */
-#chops-section{border-bottom:1px solid var(--border);padding:11px;flex-shrink:0;display:none;}
+#chops-section{padding:11px;border-bottom:1px solid var(--border);flex-shrink:0;display:none;}
 #chops-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:6px;}
-.chop{
-  background:var(--dim);border:1px solid var(--border2);border-radius:4px;
-  padding:5px 3px;text-align:center;cursor:pointer;transition:all 0.1s;
-  font-size:9px;color:var(--muted);letter-spacing:1px;
-}
+.chop{background:var(--dim);border:1px solid var(--border2);border-radius:4px;padding:5px 3px;text-align:center;cursor:pointer;transition:all 0.1s;font-size:9px;color:var(--muted);}
 .chop:hover{border-color:var(--purple);color:var(--purple);}
-.chop.playing{border-color:var(--green);color:var(--green);background:rgba(61,255,136,0.08);}
+.chop.playing{border-color:var(--green);color:var(--green);background:rgba(61,255,136,0.06);}
 .chop-label{font-size:8px;color:var(--amber);display:block;margin-bottom:2px;}
 
-/* Tracks + docs */
-.ss{border-bottom:1px solid var(--border);padding:11px;flex-shrink:0;}
+/* tracks */
+.ss{padding:11px;border-bottom:1px solid var(--border);flex-shrink:0;}
 #track-list{display:flex;flex-direction:column;gap:4px;}
 .tp{display:flex;align-items:center;gap:7px;padding:4px 7px;border-radius:5px;background:var(--dim);border:1px solid var(--border);font-size:10px;letter-spacing:1px;}
 .tdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 .tname{color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .tsteps{display:flex;gap:2px;margin-left:auto;}
 .tstep{width:6px;height:6px;border-radius:1px;background:var(--border2);}
-#docs{flex:1;overflow-y:auto;padding:11px;}
-#docs::-webkit-scrollbar{width:3px;}
-#docs::-webkit-scrollbar-thumb{background:var(--border2);}
-.db{margin-bottom:11px;}
+
+/* docs */
+.db{margin-bottom:11px;padding:0 11px;}
 .dl{font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:3px;}
 .dsym{font-size:14px;color:var(--purple);font-weight:500;display:inline-block;min-width:20px;}
 .de{font-size:11px;color:#776688;background:var(--dim);padding:3px 7px;border-radius:3px;border-left:2px solid var(--border2);line-height:1.7;cursor:pointer;transition:border-color 0.15s;}
 .de:hover{border-color:var(--purple);color:var(--text);}
 .de+.de{margin-top:3px;}
-.new-badge{font-size:8px;background:rgba(255,196,74,0.15);border:1px solid rgba(255,196,74,0.3);color:var(--amber);padding:1px 5px;border-radius:3px;letter-spacing:1px;vertical-align:middle;margin-left:4px;}
 .s{color:var(--purple);}.n{color:var(--blue);}.r{color:var(--muted);}.p{color:var(--amber);}.g{color:var(--green);}
 
-/* ── KEYBOARD ── */
+/* ── AI ASSISTANT ── */
+#ai-panel{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+#ai-messages{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;}
+#ai-messages::-webkit-scrollbar{width:3px;}
+#ai-messages::-webkit-scrollbar-thumb{background:var(--border2);}
+.ai-msg{font-size:11px;line-height:1.65;border-radius:6px;padding:8px 10px;max-width:100%;}
+.ai-msg.assistant{background:var(--dim);border:1px solid var(--border);color:var(--text);}
+.ai-msg.user{background:rgba(165,127,255,0.08);border:1px solid rgba(165,127,255,0.2);color:rgba(165,127,255,0.9);align-self:flex-end;}
+.ai-msg.system{background:transparent;color:var(--muted);font-size:10px;letter-spacing:1px;border:none;padding:4px 0;}
+.ai-msg pre{background:#060610;border:1px solid var(--border2);border-radius:4px;padding:6px 8px;margin:5px 0;overflow-x:auto;font-size:10px;line-height:1.6;color:#c8aaee;}
+.ai-msg code{color:var(--purple);font-size:10px;}
+/* insert button inside AI message */
+.insert-snippet{display:inline-block;margin-top:6px;padding:3px 10px;border:1px solid rgba(61,255,136,0.3);border-radius:10px;color:rgba(61,255,136,0.7);font-size:9px;letter-spacing:1px;cursor:pointer;transition:all 0.15s;background:transparent;font-family:var(--mono);}
+.insert-snippet:hover{background:rgba(61,255,136,0.08);color:var(--green);}
+.ai-typing{display:flex;align-items:center;gap:4px;padding:6px 10px;}
+.ai-dot{width:5px;height:5px;border-radius:50%;background:var(--purple);animation:blink 1.2s infinite;}
+.ai-dot:nth-child(2){animation-delay:0.2s;}
+.ai-dot:nth-child(3){animation-delay:0.4s;}
+@keyframes blink{0%,80%,100%{opacity:0.2;}40%{opacity:1;}}
+.ai-key-badge{display:inline-block;padding:2px 8px;border-radius:4px;background:rgba(165,127,255,0.15);border:1px solid rgba(165,127,255,0.3);color:var(--purple);font-size:11px;font-weight:500;letter-spacing:2px;margin:2px 4px;}
+#ai-input-wrap{display:flex;gap:6px;padding:8px 10px;border-top:1px solid var(--border);flex-shrink:0;}
+#ai-input{flex:1;background:#060610;border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:11px;padding:6px 9px;border-radius:6px;outline:none;resize:none;height:34px;transition:border-color 0.2s;}
+#ai-input:focus{border-color:var(--purple);}
+#ai-send{background:transparent;border:1px solid rgba(165,127,255,0.3);color:rgba(165,127,255,0.7);padding:6px 12px;border-radius:6px;cursor:pointer;font-family:var(--mono);font-size:10px;letter-spacing:1px;transition:all 0.15s;flex-shrink:0;}
+#ai-send:hover{background:rgba(165,127,255,0.1);color:var(--purple);}
+#ai-send:disabled{opacity:0.3;cursor:not-allowed;}
+
 #kb-wrap{grid-column:1/-1;grid-row:3;background:#060610;border-top:1px solid var(--border);display:flex;flex-direction:column;}
 .kb-bar{display:flex;align-items:center;gap:12px;padding:2px 14px;border-bottom:1px solid var(--border);}
 .kb-bar span{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
@@ -114,7 +134,6 @@ html,body{height:100%;background:var(--bg);overflow:hidden;}
 </head>
 <body>
 <div id="app">
-
   <div id="viz-wrap">
     <canvas id="waveform"></canvas>
     <canvas id="viz"></canvas>
@@ -131,13 +150,12 @@ html,body{height:100%;background:var(--bg);overflow:hidden;}
       <span class="status" id="status">idle</span>
     </div>
     <textarea id="editor" spellcheck="false"># tanaya's music coder
-# upload an audio file → it plays as backing track
-# chops appear in sidebar — trigger with $1 $2 etc.
+# upload a track → AI detects the key and suggests patterns
 
-@bpm 112
+@bpm 120
 @reverb 0.2
 
-# melody on top of your track
+# melody
 > C4:80 ~ E4:90 ~ G4:100 ~ A4:85 ~
   @wave sine
   @vol 0.7
@@ -148,10 +166,7 @@ html,body{height:100%;background:var(--bg);overflow:hidden;}
   @vol 0.5
   @cut 0.35
 
-# trigger sample chop 1 on beat, chop 2 off-beat
-# > $1 ~ $2 ~ $1 ~ $2 ~
-
-# double-speed arp
+# arp
 > C5 B4 A4 G4 F4 E4 D4 C4
   @wave sine
   @vol 0.3
@@ -161,90 +176,93 @@ html,body{height:100%;background:var(--bg);overflow:hidden;}
   </div>
 
   <div id="sidebar">
-    <!-- Sample upload -->
-    <div id="sample-zone">
-      <div class="st">sample / backing track</div>
-      <div id="drop-area">
-        <input type="file" accept="audio/*" id="file-input" onchange="handleFile(this.files[0])">
-        <div class="drop-text">drop audio file or <span>click to browse</span><br>mp3 · wav · ogg · m4a</div>
-      </div>
-      <div id="file-info">
-        <div class="fi-name" id="fi-name"></div>
-        <div class="fi-meta" id="fi-meta"></div>
-        <div class="fi-controls">
-          <button class="fi-btn" id="btn-backing" onclick="toggleBacking()">backing track</button>
-          <button class="fi-btn" id="btn-chop" onclick="chopSample()">auto-chop ×8</button>
-          <button class="fi-btn" id="btn-sync-bpm" onclick="syncBpm()">sync bpm</button>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('sample')">sample</div>
+      <div class="tab" onclick="switchTab('ai')">✦ ai</div>
+      <div class="tab" onclick="switchTab('ref')">ref</div>
+    </div>
+
+    <!-- SAMPLE TAB -->
+    <div id="tab-sample" class="tab-content active" style="overflow-y:auto;">
+      <div class="sp">
+        <div class="st">audio file</div>
+        <div id="drop-area">
+          <input type="file" accept="audio/*" id="file-input" onchange="handleFile(this.files[0])">
+          <div class="drop-text">drop audio or <span>click to browse</span><br>mp3 · wav · ogg · m4a</div>
         </div>
-        <div class="vol-row">
-          <label>vol</label>
-          <input type="range" min="0" max="1" step="0.01" value="0.6" id="backing-vol" oninput="setBackingVol(this.value)">
+        <div id="file-info">
+          <div class="fi-name" id="fi-name"></div>
+          <div class="fi-meta" id="fi-meta"></div>
+          <div class="fi-controls">
+            <button class="fi-btn" id="btn-backing" onclick="toggleBacking()">backing track</button>
+            <button class="fi-btn" id="btn-chop" onclick="chopSample()">auto-chop ×8</button>
+            <button class="fi-btn" id="btn-sync-bpm" onclick="syncBpm()">sync bpm</button>
+          </div>
+          <div class="vol-row">
+            <label>vol</label>
+            <input type="range" min="0" max="1" step="0.01" value="0.6" oninput="setBackingVol(this.value)">
+          </div>
+        </div>
+      </div>
+      <div id="chops-section">
+        <div class="st">chops <span style="color:var(--muted);font-size:8px">use $1–$8 in patterns</span></div>
+        <div id="chops-grid"></div>
+      </div>
+      <div class="ss">
+        <div class="st">tracks</div>
+        <div id="track-list"><span style="font-size:10px;color:var(--muted)">press run to start</span></div>
+      </div>
+    </div>
+
+    <!-- AI TAB -->
+    <div id="tab-ai" class="tab-content" style="display:none;flex-direction:column;">
+      <div id="ai-panel">
+        <div id="ai-messages">
+          <div class="ai-msg system">✦ ai music assistant</div>
+          <div class="ai-msg assistant">
+            Hey! Upload an audio file and I'll detect the key, suggest matching notes and chords, and write patterns you can drop straight into your code.<br><br>
+            Or just ask me anything — <em>"suggest a bass line in C minor"</em>, <em>"what chords fit A major?"</em>, <em>"write me a melody pattern"</em>.
+          </div>
+        </div>
+        <div id="ai-input-wrap">
+          <textarea id="ai-input" placeholder="ask the ai..." onkeydown="aiInputKey(event)"></textarea>
+          <button id="ai-send" onclick="sendAiMessage()">send</button>
         </div>
       </div>
     </div>
 
-    <!-- Chops grid -->
-    <div id="chops-section">
-      <div class="st">chops <span style="color:var(--muted);font-size:8px">use $1–$8 in patterns</span></div>
-      <div id="chops-grid"></div>
-    </div>
-
-    <!-- Tracks -->
-    <div class="ss">
-      <div class="st">tracks</div>
-      <div id="track-list"><span style="font-size:10px;color:var(--muted)">press run to start</span></div>
-    </div>
-
-    <!-- Docs -->
-    <div id="docs">
-      <div class="st" style="margin-bottom:8px">language</div>
-
+    <!-- REF TAB -->
+    <div id="tab-ref" class="tab-content" style="overflow-y:auto;padding-top:10px;">
       <div class="db">
-        <div class="dl"><span class="dsym">$n</span> trigger chop <span class="new-badge">new</span></div>
-        <div class="de" onclick="ins('> $1 ~ $2 ~ $1 ~ $2 ~\n')">
-          <span class="s">></span> <span class="p">$1</span> <span class="r">~</span> <span class="p">$2</span> <span class="r">~</span><br>
-          <span style="color:#445">triggers sample chop 1, 2 …</span>
-        </div>
+        <div class="dl"><span class="dsym">$n</span> trigger chop</div>
+        <div class="de" onclick="ins('> $1 ~ $2 ~ $1 ~ $2 ~\n')"><span class="s">></span> <span class="p">$1</span> <span class="r">~</span> <span class="p">$2</span> <span class="r">~</span></div>
       </div>
-
       <div class="db">
-        <div class="dl"><span class="dsym">:vel</span> velocity</div>
-        <div class="de" onclick="ins('> C4:50 E4:90 G4:127\n')">
-          <span class="n">C4</span><span class="s">:50</span> <span class="n">E4</span><span class="s">:90</span> <span class="n">G4</span><span class="s">:127</span>
-        </div>
+        <div class="dl"><span class="dsym">:vel</span> velocity 1–127</div>
+        <div class="de" onclick="ins('> C4:50 E4:90 G4:127\n')"><span class="n">C4</span><span class="s">:50</span> <span class="n">E4</span><span class="s">:90</span> <span class="n">G4</span><span class="s">:127</span></div>
       </div>
-
       <div class="db">
-        <div class="dl"><span class="dsym">@speed</span> tempo mult</div>
-        <div class="de" onclick="ins('  @speed 2\n')">
-          <span class="p">@speed</span> <span class="g">2</span> = double &nbsp;
-          <span class="p">@speed</span> <span class="g">0.5</span> = half
-        </div>
+        <div class="dl"><span class="dsym">@speed</span> per-track tempo</div>
+        <div class="de" onclick="ins('  @speed 2\n')"><span class="p">@speed</span> <span class="g">2</span> = double &nbsp; <span class="p">@speed</span> <span class="g">0.5</span> = half</div>
       </div>
-
       <div class="db">
         <div class="dl"><span class="dsym">*</span> repeat</div>
         <div class="de" onclick="ins('> [C4 E4]*3 G4\n')"><span class="s">></span> [<span class="n">C4 E4</span>]<span class="s">*3</span> <span class="n">G4</span></div>
       </div>
-
       <div class="db">
         <div class="dl"><span class="dsym">()</span> chord</div>
         <div class="de" onclick="ins('> (C4 E4 G4):80 ~\n')"><span class="s">></span> (<span class="n">C4 E4 G4</span>)<span class="s">:80</span></div>
       </div>
-
       <div class="db">
-        <div class="dl"><span class="dsym">@</span> properties</div>
+        <div class="dl"><span class="dsym">@</span> track props</div>
         <div class="de" onclick="ins('  @wave sine\n  @vol 0.7\n  @cut 0.5\n  @speed 1\n')">
-          <span class="p">@wave</span> <span style="color:#556">sine triangle square saw</span><br>
+          <span class="p">@wave</span> sine triangle square saw<br>
           <span class="p">@vol</span> 0–1 &nbsp; <span class="p">@cut</span> 0–1 &nbsp; <span class="p">@speed</span> 0.5–4<br>
           <span class="p">@bpm</span> 40–200 &nbsp; <span class="p">@reverb</span> 0–1
         </div>
       </div>
-
-      <div style="font-size:9px;color:var(--muted);letter-spacing:1px;line-height:1.9;margin-top:6px">
-        ctrl+enter = run live<br>
-        click examples to insert<br>
-        tracks loop independently
+      <div style="padding:0 11px;font-size:9px;color:var(--muted);letter-spacing:1px;line-height:1.9;margin-top:4px;margin-bottom:10px;">
+        ctrl+enter = run live<br>each > line = one track<br>tracks loop independently
       </div>
     </div>
   </div>
@@ -272,29 +290,35 @@ let ac=null,masterComp=null,masterGain=null;
 let reverbSend=null,reverbReturn=null;
 let playing=false,schedTimers=[],tracks=[],vizNotes=[],vizHue=0,vizT=0;
 let isRecording=false,mediaRecorder=null,recordedChunks=[],recordingDest=null;
-
-// Sample state
-let sampleBuffer=null;      // decoded AudioBuffer of uploaded file
-let sampleDuration=0;
-let sampleName='';
-let backingNode=null;       // currently playing backing track source
-let backingGain=null;
-let backingActive=false;
-let backingStartTime=0;     // ac time when backing started
-let chops=[];               // array of {start, end} in seconds
-let chopNodes=[];           // currently playing chop sources
+let sampleBuffer=null,sampleDuration=0,sampleName='';
+let backingNode=null,backingGain=null,backingActive=false,backingStartTime=0;
+let chops=[],detectedBpm=null,detectedKey=null;
 
 const NOTE_NAMES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const NATURALS=['C','D','E','F','G','A','B'];
 const NAT_SEMI=[0,2,4,5,7,9,11];
 const COLORS=['#a57fff','#3dff88','#ff6faa','#ffc44a','#5ab4ff','#ff9f6f','#6fffee','#ffaaff'];
 
+// Key profiles (Krumhansl-Schmuckler weights)
+const MAJOR_PROFILE=[6.35,2.23,3.48,2.33,4.38,4.09,2.52,5.19,2.39,3.66,2.29,2.88];
+const MINOR_PROFILE=[6.33,2.68,3.52,5.38,2.60,3.53,2.54,4.75,3.98,2.69,3.34,3.17];
+
 function midiToFreq(m){return 440*Math.pow(2,(m-69)/12);}
 function noteToMidi(name,oct){
   const map={Db:'C#',Eb:'D#',Fb:'E',Gb:'F#',Ab:'G#',Bb:'A#',Cb:'B'};
-  const n=map[name]||name;
-  const si=NOTE_NAMES.indexOf(n);
+  const n=map[name]||name;const si=NOTE_NAMES.indexOf(n);
   return si>=0?12*(oct+1)+si:-1;
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    const names=['sample','ai','ref'];
+    t.classList.toggle('active',names[i]===name);
+  });
+  document.querySelectorAll('.tab-content').forEach(el=>el.style.display='none');
+  const el=document.getElementById('tab-'+name);
+  if(el)el.style.display='flex';
 }
 
 // ── AUDIO INIT ────────────────────────────────────────────────────────────────
@@ -323,7 +347,7 @@ function buildReverbBus(wet){
   reverbSend.connect(conv);conv.connect(reverbReturn);reverbReturn.connect(masterComp);
 }
 
-// ── FILE UPLOAD & DECODE ──────────────────────────────────────────────────────
+// ── FILE UPLOAD ───────────────────────────────────────────────────────────────
 function handleFile(file){
   if(!file)return;
   initAC();
@@ -331,20 +355,25 @@ function handleFile(file){
   const reader=new FileReader();
   reader.onload=e=>{
     ac.decodeAudioData(e.target.result).then(buf=>{
-      sampleBuffer=buf;
-      sampleDuration=buf.duration;
+      sampleBuffer=buf;sampleDuration=buf.duration;
       document.getElementById('fi-name').textContent=file.name;
-      document.getElementById('fi-meta').textContent=
-        `${buf.duration.toFixed(1)}s · ${buf.sampleRate}Hz · ${buf.numberOfChannels}ch`;
+      document.getElementById('fi-meta').textContent=`${buf.duration.toFixed(1)}s · ${buf.sampleRate}Hz`;
       document.getElementById('file-info').style.display='block';
       drawWaveform(buf);
-      estimateBpm(buf);
-    }).catch(()=>setStatus('err','could not decode audio file'));
+      const bpm=estimateBpm(buf);
+      const key=detectKey(buf);
+      detectedBpm=bpm;detectedKey=key;
+      const keyStr=key?`${key.root} ${key.mode}`:'unknown';
+      document.getElementById('fi-meta').textContent+=` · ~${bpm||'?'} bpm · ${keyStr}`;
+      // Auto-notify AI tab
+      aiSystemMessage(`Audio loaded: "${file.name}" — detected key: <span class="ai-key-badge">${keyStr}</span>, BPM: ~${bpm||'?'}. Ask me to suggest patterns, chords, or melodies that fit!`);
+      switchTab('ai');
+    }).catch(()=>setStatus('err','could not decode audio'));
   };
   reader.readAsArrayBuffer(file);
 }
 
-// ── WAVEFORM DRAW ─────────────────────────────────────────────────────────────
+// ── WAVEFORM ──────────────────────────────────────────────────────────────────
 function drawWaveform(buf){
   const W=wfCanvas.width=wfCanvas.offsetWidth*(devicePixelRatio||1);
   const H=wfCanvas.height=wfCanvas.offsetHeight*(devicePixelRatio||1);
@@ -353,22 +382,17 @@ function drawWaveform(buf){
   const data=buf.getChannelData(0);
   const step=Math.ceil(data.length/W);
   const mid=H/2;
-  wc.beginPath();
-  wc.strokeStyle='rgba(165,127,255,0.35)';
-  wc.lineWidth=1;
+  wc.beginPath();wc.strokeStyle='rgba(165,127,255,0.3)';wc.lineWidth=1;
   for(let x=0;x<W;x++){
-    let min=1,max=-1;
-    for(let j=0;j<step;j++){const v=data[x*step+j]||0;if(v<min)min=v;if(v>max)max=v;}
-    wc.moveTo(x,mid+(min*mid*0.9));
-    wc.lineTo(x,mid+(max*mid*0.9));
+    let mn=1,mx=-1;
+    for(let j=0;j<step;j++){const v=data[x*step+j]||0;if(v<mn)mn=v;if(v>mx)mx=v;}
+    wc.moveTo(x,mid+(mn*mid*0.9));wc.lineTo(x,mid+(mx*mid*0.9));
   }
   wc.stroke();
-  // draw chop markers
   if(chops.length){
     chops.forEach((c,i)=>{
       const x=(c.start/sampleDuration)*W;
-      wc.strokeStyle='rgba(255,196,74,0.6)';
-      wc.lineWidth=1;
+      wc.strokeStyle='rgba(255,196,74,0.5)';wc.lineWidth=1;
       wc.beginPath();wc.moveTo(x,0);wc.lineTo(x,H);wc.stroke();
       wc.fillStyle='rgba(255,196,74,0.8)';
       wc.font=`${9*(devicePixelRatio||1)}px monospace`;
@@ -378,44 +402,77 @@ function drawWaveform(buf){
 }
 
 // ── BPM ESTIMATION ────────────────────────────────────────────────────────────
-let detectedBpm=null;
 function estimateBpm(buf){
-  // Onset detection via energy diff on downmixed signal
   const data=buf.getChannelData(0);
   const sr=buf.sampleRate;
-  const hop=Math.floor(sr*0.01); // 10ms hop
+  const hop=Math.floor(sr*0.01);
   const wins=Math.floor(data.length/hop);
   const energy=new Float32Array(wins);
-  for(let i=0;i<wins;i++){
-    let e=0;for(let j=0;j<hop;j++)e+=data[i*hop+j]**2;
-    energy[i]=e/hop;
-  }
-  // Onset = energy spike
+  for(let i=0;i<wins;i++){let e=0;for(let j=0;j<hop;j++)e+=data[i*hop+j]**2;energy[i]=e/hop;}
   const onsets=[];
   for(let i=2;i<wins-2;i++){
-    if(energy[i]>energy[i-1]*1.5&&energy[i]>energy[i+1]*1.2&&energy[i]>0.002)
-      onsets.push(i*hop/sr);
+    if(energy[i]>energy[i-1]*1.5&&energy[i]>energy[i+1]*1.2&&energy[i]>0.002)onsets.push(i*hop/sr);
   }
-  if(onsets.length<4){setStatus('ok','loaded — bpm unclear');return;}
-  // Median inter-onset interval → bpm
+  if(onsets.length<4)return null;
   const intervals=[];
   for(let i=1;i<Math.min(onsets.length,40);i++)intervals.push(onsets[i]-onsets[i-1]);
   intervals.sort((a,b)=>a-b);
   const med=intervals[Math.floor(intervals.length/2)];
   let bpm=Math.round(60/med);
-  // Clamp to musical range
   while(bpm>160)bpm=Math.round(bpm/2);
   while(bpm<60)bpm=Math.round(bpm*2);
-  detectedBpm=bpm;
-  document.getElementById('fi-meta').textContent+=` · ~${bpm} bpm detected`;
+  return bpm;
+}
+
+// ── KEY DETECTION (Krumhansl-Schmuckler) ──────────────────────────────────────
+function detectKey(buf){
+  // Build chromagram from audio
+  const data=buf.getChannelData(0);
+  const sr=buf.sampleRate;
+  const chroma=new Float32Array(12);
+  // Sample every 0.05s, compute dominant frequency via zero-crossing approximation
+  const frameSize=Math.floor(sr*0.05);
+  const frames=Math.floor(data.length/frameSize);
+  for(let f=0;f<frames;f++){
+    const frame=data.slice(f*frameSize,(f+1)*frameSize);
+    // Simple spectral centroid → pitch class
+    let energy=0,wsum=0;
+    for(let i=1;i<frameSize;i++){
+      const freq=i*sr/frameSize;
+      const mag=Math.abs(frame[i]||0);
+      energy+=mag;wsum+=mag*freq;
+    }
+    if(energy>0.001){
+      const centroid=wsum/energy;
+      // Map frequency to MIDI pitch class
+      const midi=Math.round(12*Math.log2(centroid/440)+69);
+      const pc=((midi%12)+12)%12;
+      chroma[pc]+=energy;
+    }
+  }
+  // Normalize chroma
+  const sum=chroma.reduce((a,b)=>a+b,0)||1;
+  for(let i=0;i<12;i++)chroma[i]/=sum;
+
+  // Correlate with key profiles for all 24 keys
+  let bestScore=-Infinity,bestKey=null;
+  for(let root=0;root<12;root++){
+    // Major
+    let scoreM=0;
+    for(let i=0;i<12;i++)scoreM+=chroma[(i+root)%12]*MAJOR_PROFILE[i];
+    if(scoreM>bestScore){bestScore=scoreM;bestKey={root:NOTE_NAMES[root],mode:'major',chroma:[...chroma],rootIdx:root};}
+    // Minor
+    let scorem=0;
+    for(let i=0;i<12;i++)scorem+=chroma[(i+root)%12]*MINOR_PROFILE[i];
+    if(scorem>bestScore){bestScore=scorem;bestKey={root:NOTE_NAMES[root],mode:'minor',chroma:[...chroma],rootIdx:root};}
+  }
+  return bestKey;
 }
 
 function syncBpm(){
   if(!detectedBpm){setStatus('err','no bpm detected');return;}
-  const src=editor.value;
-  const newSrc=src.replace(/@bpm\s+\d+/,`@bpm ${detectedBpm}`);
-  editor.value=newSrc===src?src.replace(/(^|\n)(#[^\n]*)?\n/,`$&@bpm ${detectedBpm}\n`):newSrc;
-  setStatus('ok',`bpm synced to ${detectedBpm}`);
+  const newSrc=editor.value.replace(/@bpm\s+\d+/,`@bpm ${detectedBpm}`);
+  editor.value=newSrc;setStatus('ok',`bpm synced to ${detectedBpm}`);
 }
 
 // ── BACKING TRACK ─────────────────────────────────────────────────────────────
@@ -425,21 +482,16 @@ function toggleBacking(){
   if(backingActive){stopBacking();return;}
   startBacking();
 }
-
 function startBacking(){
   stopBacking();
   backingNode=ac.createBufferSource();
-  backingNode.buffer=sampleBuffer;
-  backingNode.loop=true;
-  backingNode.connect(backingGain);
-  backingNode.start(0);
-  backingStartTime=ac.currentTime;
-  backingActive=true;
+  backingNode.buffer=sampleBuffer;backingNode.loop=true;
+  backingNode.connect(backingGain);backingNode.start(0);
+  backingStartTime=ac.currentTime;backingActive=true;
   document.getElementById('btn-backing').classList.add('active');
   document.getElementById('btn-backing').textContent='stop backing';
   document.getElementById('playhead').style.display='block';
 }
-
 function stopBacking(){
   if(backingNode){try{backingNode.stop();}catch(e){}backingNode=null;}
   backingActive=false;
@@ -447,71 +499,176 @@ function stopBacking(){
   document.getElementById('btn-backing').textContent='backing track';
   document.getElementById('playhead').style.display='none';
 }
-
 function setBackingVol(v){if(backingGain)backingGain.gain.value=parseFloat(v);}
 
-// ── AUTO CHOP ─────────────────────────────────────────────────────────────────
+// ── CHOPS ─────────────────────────────────────────────────────────────────────
 function chopSample(){
-  if(!sampleBuffer){setStatus('err','no file loaded');return;}
-  const n=8;
-  const chunkDur=sampleDuration/n;
-  chops=Array(n).fill(0).map((_,i)=>({start:i*chunkDur,end:(i+1)*chunkDur,label:`$${i+1}`}));
-  renderChopsGrid();
-  drawWaveform(sampleBuffer);
+  if(!sampleBuffer)return;
+  const n=8,chunkDur=sampleDuration/n;
+  chops=Array(n).fill(0).map((_,i)=>({start:i*chunkDur,end:(i+1)*chunkDur}));
+  renderChopsGrid();drawWaveform(sampleBuffer);
   document.getElementById('chops-section').style.display='block';
-  setStatus('ok',`chopped into ${n} slices — use $1–$8 in patterns`);
+  setStatus('ok',`chopped into ${n} — use $1–$8`);
 }
-
 function renderChopsGrid(){
-  const grid=document.getElementById('chops-grid');
-  grid.innerHTML=chops.map((c,i)=>`
+  document.getElementById('chops-grid').innerHTML=chops.map((c,i)=>`
     <div class="chop" id="chop-${i}" onclick="previewChop(${i})">
-      <span class="chop-label">$${i+1}</span>
-      ${c.start.toFixed(1)}s
+      <span class="chop-label">$${i+1}</span>${c.start.toFixed(1)}s
     </div>`).join('');
 }
-
 function previewChop(idx){
-  if(!sampleBuffer||!ac)return;
-  if(ac.state==='suspended')ac.resume();
-  const c=chops[idx];
-  const src=ac.createBufferSource();
-  src.buffer=sampleBuffer;
-  const g=ac.createGain();g.gain.value=0.8;
-  src.connect(g);g.connect(masterComp);
+  if(!sampleBuffer||!ac)return;if(ac.state==='suspended')ac.resume();
+  const c=chops[idx];const src=ac.createBufferSource();src.buffer=sampleBuffer;
+  const g=ac.createGain();g.gain.value=0.8;src.connect(g);g.connect(masterComp);
   src.start(0,c.start,c.end-c.start);
   const el=document.getElementById(`chop-${idx}`);
   if(el){el.classList.add('playing');src.onended=()=>el.classList.remove('playing');}
-  chopNodes.push(src);
 }
-
 function playChopAtTime(idx,startTime){
   if(!sampleBuffer||!ac||idx<0||idx>=chops.length)return;
-  const c=chops[idx];
-  const src=ac.createBufferSource();
-  src.buffer=sampleBuffer;
-  const g=ac.createGain();g.gain.value=0.75;
-  src.connect(g);g.connect(masterComp);
+  const c=chops[idx];const src=ac.createBufferSource();src.buffer=sampleBuffer;
+  const g=ac.createGain();g.gain.value=0.75;src.connect(g);g.connect(masterComp);
   src.start(startTime,c.start,c.end-c.start);
   vizNotes.push({midi:60+idx*2,startTime,endTime:startTime+(c.end-c.start),color:COLORS[idx%COLORS.length],vol:0.75});
 }
 
+// ── AI ASSISTANT ──────────────────────────────────────────────────────────────
+let aiHistory=[];
+
+function aiSystemMessage(html){
+  const msgs=document.getElementById('ai-messages');
+  const div=document.createElement('div');
+  div.className='ai-msg assistant';div.innerHTML=html;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+
+function buildAiContext(){
+  // Give Claude everything it needs to make good suggestions
+  let ctx=`You are a music assistant built into a live music coding app called "tanaya's music coder". 
+The user writes patterns in a custom language and you help them make music.
+
+THE LANGUAGE:
+- > starts a track: \`> C4 E4 G4\`
+- ~ is a rest, $n triggers a sample chop
+- :vel sets velocity 1-127: \`C4:80\`
+- *n repeats a note: \`C4*4\`
+- []*n repeats a group: \`[C4 E4]*3\`
+- () is a chord: \`(C4 E4 G4):80\`
+- @wave sine/triangle/square/saw
+- @vol 0-1, @cut 0-1, @speed 0.5/1/2/4
+- @bpm 40-200, @reverb 0-1
+- notes: C D E F G A B + octave 2-6, e.g. C4 F#3 Eb5
+- # is a comment
+
+CURRENT CODE IN EDITOR:
+\`\`\`
+${editor.value}
+\`\`\`
+`;
+  if(detectedKey){
+    ctx+=`\nDETECTED KEY OF UPLOADED AUDIO: ${detectedKey.root} ${detectedKey.mode}`;
+    // Build scale notes for this key
+    const scaleIntervals=detectedKey.mode==='major'?[0,2,4,5,7,9,11]:[0,2,3,5,7,8,10];
+    const scaleNotes=scaleIntervals.map(i=>NOTE_NAMES[(detectedKey.rootIdx+i)%12]);
+    ctx+=`\nSCALE NOTES: ${scaleNotes.join(', ')}`;
+    ctx+=`\nCOMMON CHORDS IN THIS KEY (as triads): suggest appropriate ones`;
+  }
+  if(detectedBpm)ctx+=`\nDETECTED BPM: ${detectedBpm}`;
+  ctx+=`\n\nWhen you suggest patterns, format them as code blocks using the language above so the user can insert them directly. Keep explanations short and musical. If asked for chords or melodies, write actual groove patterns, not just note names.`;
+  return ctx;
+}
+
+async function sendAiMessage(){
+  const input=document.getElementById('ai-input');
+  const msg=input.value.trim();
+  if(!msg)return;
+  input.value='';
+
+  // Show user message
+  const msgs=document.getElementById('ai-messages');
+  const userDiv=document.createElement('div');
+  userDiv.className='ai-msg user';userDiv.textContent=msg;
+  msgs.appendChild(userDiv);
+
+  // Typing indicator
+  const typingDiv=document.createElement('div');
+  typingDiv.className='ai-typing';
+  typingDiv.innerHTML='<div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div>';
+  msgs.appendChild(typingDiv);msgs.scrollTop=msgs.scrollHeight;
+
+  const sendBtn=document.getElementById('ai-send');
+  sendBtn.disabled=true;
+
+  // Build messages for API
+  aiHistory.push({role:'user',content:msg});
+
+  try{
+    const response=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        system:buildAiContext(),
+        messages:aiHistory
+      })
+    });
+    const data=await response.json();
+    const reply=data.content?.map(b=>b.text||'').join('')||'Sorry, something went wrong.';
+    aiHistory.push({role:'assistant',content:reply});
+
+    typingDiv.remove();
+    const replyDiv=document.createElement('div');
+    replyDiv.className='ai-msg assistant';
+    replyDiv.innerHTML=formatAiReply(reply);
+    msgs.appendChild(replyDiv);
+
+    // Add insert buttons for any code blocks
+    replyDiv.querySelectorAll('pre').forEach(pre=>{
+      const btn=document.createElement('button');
+      btn.className='insert-snippet';btn.textContent='+ insert into editor';
+      btn.onclick=()=>{
+        const code=pre.textContent.trim();
+        ins(code+'\n');
+        setStatus('ok','inserted!');
+        switchTab('sample');
+      };
+      pre.after(btn);
+    });
+    msgs.scrollTop=msgs.scrollHeight;
+  }catch(e){
+    typingDiv.remove();
+    aiSystemMessage('Connection error — make sure you\'re using this via the Claude artifact or a page with API access.');
+  }
+  sendBtn.disabled=false;
+}
+
+function formatAiReply(text){
+  // Convert markdown code blocks and basic formatting to HTML
+  return text
+    .replace(/```[a-z]*\n?([\s\S]*?)```/g,(_,code)=>`<pre>${escHtml(code.trim())}</pre>`)
+    .replace(/`([^`]+)`/g,(_,c)=>`<code>${escHtml(c)}</code>`)
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+    .replace(/\n\n/g,'<br><br>')
+    .replace(/\n/g,'<br>');
+}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function aiInputKey(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAiMessage();}
+}
+
 // ── NOTE PLAYBACK ─────────────────────────────────────────────────────────────
 function velToGain(vel){return vel/127;}
-
 function playNote(midi,opts,startTime){
   if(!ac)return;
   const{wave,vol,cut,atk,rel,dur,vel,color}=opts;
-  const osc=ac.createOscillator();
-  const g=ac.createGain();
-  const filt=ac.createBiquadFilter();
+  const osc=ac.createOscillator(),g=ac.createGain(),filt=ac.createBiquadFilter();
   filt.type='lowpass';filt.frequency.value=200+cut*12000;
-  osc.type=wave==='saw'?'sawtooth':wave||'sine';
-  osc.frequency.value=midiToFreq(midi);
+  osc.type=wave==='saw'?'sawtooth':wave||'sine';osc.frequency.value=midiToFreq(midi);
   const a=Math.max(0.005,atk),r2=Math.max(0.05,rel*0.75);
   const peak=vol*0.11*velToGain(vel||100);
-  g.gain.setValueAtTime(0,startTime);
-  g.gain.linearRampToValueAtTime(peak,startTime+a);
+  g.gain.setValueAtTime(0,startTime);g.gain.linearRampToValueAtTime(peak,startTime+a);
   g.gain.setValueAtTime(peak,Math.max(startTime+a+0.001,startTime+dur-r2));
   g.gain.exponentialRampToValueAtTime(0.0001,startTime+dur);
   osc.connect(filt);filt.connect(g);
@@ -524,18 +681,14 @@ function playNote(midi,opts,startTime){
 
 // ── PARSER ────────────────────────────────────────────────────────────────────
 function parseGroove(src){
-  const lines=src.split('\n');
-  let bpm=120,reverb=0;
-  const trackDefs=[];let cur=null;
+  const lines=src.split('\n');let bpm=120,reverb=0;const trackDefs=[];let cur=null;
   for(let li=0;li<lines.length;li++){
-    const raw=lines[li].replace(/#.*/,'');
-    const trimmed=raw.trim();
-    if(!trimmed)continue;
+    const raw=lines[li].replace(/#.*/,'');const trimmed=raw.trim();if(!trimmed)continue;
     const isIndented=raw.startsWith(' ')||raw.startsWith('\t');
     if(trimmed.startsWith('@')&&!isIndented){
       const parts=trimmed.slice(1).split(/\s+/);
-      if(parts[0]==='bpm')   bpm   =Math.max(40,Math.min(250,parseFloat(parts[1])||120));
-      if(parts[0]==='reverb')reverb=Math.max(0, Math.min(1,  parseFloat(parts[1])||0));
+      if(parts[0]==='bpm')bpm=Math.max(40,Math.min(250,parseFloat(parts[1])||120));
+      if(parts[0]==='reverb')reverb=Math.max(0,Math.min(1,parseFloat(parts[1])||0));
       continue;
     }
     if(trimmed.startsWith('>')&&!isIndented){
@@ -543,13 +696,12 @@ function parseGroove(src){
       trackDefs.push(cur);continue;
     }
     if(trimmed.startsWith('@')&&isIndented&&cur){
-      const parts=trimmed.slice(1).split(/\s+/);
-      const k=parts[0],v=parts[1];
-      if(k==='wave') cur.wave =v||'sine';
-      if(k==='vol')  cur.vol  =Math.max(0,Math.min(1,parseFloat(v)||0.7));
-      if(k==='cut')  cur.cut  =Math.max(0,Math.min(1,parseFloat(v)||0.8));
-      if(k==='atk')  cur.atk  =Math.max(0,Math.min(0.5,parseFloat(v)||0.01));
-      if(k==='rel')  cur.rel  =Math.max(0,Math.min(2,parseFloat(v)||0.3));
+      const parts=trimmed.slice(1).split(/\s+/);const k=parts[0],v=parts[1];
+      if(k==='wave')cur.wave=v||'sine';
+      if(k==='vol')cur.vol=Math.max(0,Math.min(1,parseFloat(v)||0.7));
+      if(k==='cut')cur.cut=Math.max(0,Math.min(1,parseFloat(v)||0.8));
+      if(k==='atk')cur.atk=Math.max(0,Math.min(0.5,parseFloat(v)||0.01));
+      if(k==='rel')cur.rel=Math.max(0,Math.min(2,parseFloat(v)||0.3));
       if(k==='speed')cur.speed=Math.max(0.125,Math.min(8,parseFloat(v)||1));
     }
   }
@@ -559,49 +711,37 @@ function parseGroove(src){
 function parseSeq(src){
   const tokens=[];let i=0;
   while(i<src.length){
-    while(i<src.length&&src[i]===' ')i++;
-    if(i>=src.length)break;
-    // chop token $n
+    while(i<src.length&&src[i]===' ')i++;if(i>=src.length)break;
     if(src[i]==='$'){
       const m=src.slice(i).match(/^\$(\d+)(\*(\d+))?/);
-      if(m){
-        const chopIdx=parseInt(m[1])-1;
-        const rep=m[3]?Math.min(parseInt(m[3]),32):1;
-        for(let r=0;r<rep;r++)tokens.push({type:'chop',chopIdx,dur:1,vel:100});
-        i+=m[0].length;continue;
-      }
+      if(m){const ci=parseInt(m[1])-1;const rep=m[3]?Math.min(parseInt(m[3]),32):1;
+        for(let r=0;r<rep;r++)tokens.push({type:'chop',chopIdx:ci,dur:1,vel:100});
+        i+=m[0].length;continue;}
     }
     if(src[i]==='~'){
-      let rep=1;i++;
-      const m=src.slice(i).match(/^\*(\d+)/);
+      let rep=1;i++;const m=src.slice(i).match(/^\*(\d+)/);
       if(m){rep=Math.min(parseInt(m[1]),64);i+=m[0].length;}
-      for(let r=0;r<rep;r++)tokens.push({type:'rest',dur:1,vel:100});
-      continue;
+      for(let r=0;r<rep;r++)tokens.push({type:'rest',dur:1,vel:100});continue;
     }
     if(src[i]==='['){
       let j=i+1,d=1,inner='';
       while(j<src.length&&d>0){if(src[j]==='[')d++;else if(src[j]===']')d--;if(d>0)inner+=src[j];j++;}
       let rep=1;const m=src.slice(j).match(/^\*(\d+)/);
       if(m){rep=Math.min(parseInt(m[1]),32);j+=m[0].length;}
-      const sub=parseSeq(inner);for(let r=0;r<rep;r++)tokens.push(...sub);
-      i=j;continue;
+      const sub=parseSeq(inner);for(let r=0;r<rep;r++)tokens.push(...sub);i=j;continue;
     }
     if(src[i]==='('){
       let j=i+1,notes=[];
       while(j<src.length&&src[j]!==')'){
-        while(j<src.length&&src[j]===' ')j++;
-        if(src[j]===')') break;
+        while(j<src.length&&src[j]===' ')j++;if(src[j]===')') break;
         const r=readNote(src,j);if(!r){j++;continue;}
         if(r.multi)notes.push(...r.notes);else notes.push(r.note);j=r.end;
       }
-      j++;
-      let chordVel=100;
-      const vm=src.slice(j).match(/^:(\d+)/);
-      if(vm){chordVel=Math.max(1,Math.min(127,parseInt(vm[1])));j+=vm[0].length;}
+      j++;let cv=100;const vm=src.slice(j).match(/^:(\d+)/);
+      if(vm){cv=Math.max(1,Math.min(127,parseInt(vm[1])));j+=vm[0].length;}
       let rep=1;const m=src.slice(j).match(/^\*(\d+)/);
       if(m){rep=Math.min(parseInt(m[1]),32);j+=m[0].length;}
-      for(let r=0;r<rep;r++)tokens.push({type:'chord',notes,dur:1,vel:chordVel});
-      i=j;continue;
+      for(let r=0;r<rep;r++)tokens.push({type:'chord',notes,dur:1,vel:cv});i=j;continue;
     }
     const r=readNote(src,i);
     if(r){if(r.multi)tokens.push(...r.notes);else tokens.push(r.note);i=r.end;continue;}
@@ -623,8 +763,7 @@ function readNote(s,i){
 
 // ── SCHEDULER ─────────────────────────────────────────────────────────────────
 function startTracks(parsed){
-  stopAll(false);playing=true;
-  buildReverbBus(parsed.reverb);
+  stopAll(false);playing=true;buildReverbBus(parsed.reverb);
   const baseDur=60/parsed.bpm/4;
   document.getElementById('run-btn').classList.add('live');
   document.getElementById('run-btn').textContent='● live';
@@ -636,15 +775,10 @@ function startTracks(parsed){
       if(!playing)return;
       while(tr.nextTime<ac.currentTime+0.25){
         const tok=tr.seq[tr.stepIdx%tr.seq.length];
-        const dur=tr.stepDur*(tok.dur||1)*0.86;
-        const vel=tok.vel||100;
-        if(tok.type==='note'){
-          playNote(tok.midi,{...tr,dur,vel},tr.nextTime);
-        } else if(tok.type==='chord'){
-          tok.notes.forEach(n=>playNote(n.midi,{...tr,dur,vel},tr.nextTime));
-        } else if(tok.type==='chop'){
-          playChopAtTime(tok.chopIdx,tr.nextTime);
-        }
+        const dur=tr.stepDur*(tok.dur||1)*0.86;const vel=tok.vel||100;
+        if(tok.type==='note')playNote(tok.midi,{...tr,dur,vel},tr.nextTime);
+        else if(tok.type==='chord')tok.notes.forEach(n=>playNote(n.midi,{...tr,dur,vel},tr.nextTime));
+        else if(tok.type==='chop')playChopAtTime(tok.chopIdx,tr.nextTime);
         updateTStep(tr,tr.stepIdx%tr.seq.length);
         tr.stepIdx++;tr.nextTime+=tr.stepDur;
       }
@@ -655,10 +789,8 @@ function startTracks(parsed){
 }
 
 function stopAll(ui=true){
-  playing=false;
-  schedTimers.forEach(clearTimeout);schedTimers=[];tracks=[];
-  reverbSend=null;reverbReturn=null;
-  if(isRecording)stopRecording();
+  playing=false;schedTimers.forEach(clearTimeout);schedTimers=[];tracks=[];
+  reverbSend=null;reverbReturn=null;if(isRecording)stopRecording();
   if(ui){
     document.getElementById('run-btn').classList.remove('live');
     document.getElementById('run-btn').textContent='▶ run';
@@ -666,38 +798,32 @@ function stopAll(ui=true){
   }
 }
 
-// ── WAV EXPORT ────────────────────────────────────────────────────────────────
+// ── EXPORT ────────────────────────────────────────────────────────────────────
 function toggleExport(){
   if(!playing){setStatus('err','start playing first');return;}
-  if(isRecording){stopRecording();return;}
-  startRecording();
+  if(isRecording){stopRecording();return;}startRecording();
 }
 function startRecording(){
   if(!ac||!masterGain)return;
   try{
-    recordingDest=ac.createMediaStreamDestination();
-    masterGain.connect(recordingDest);
+    recordingDest=ac.createMediaStreamDestination();masterGain.connect(recordingDest);
     recordedChunks=[];
     const mime=MediaRecorder.isTypeSupported('audio/webm;codecs=opus')?'audio/webm;codecs=opus':'audio/ogg;codecs=opus';
     mediaRecorder=new MediaRecorder(recordingDest.stream,{mimeType:mime});
     mediaRecorder.ondataavailable=e=>{if(e.data.size>0)recordedChunks.push(e.data);};
-    mediaRecorder.onstop=finishExport;
-    mediaRecorder.start(100);
+    mediaRecorder.onstop=finishExport;mediaRecorder.start(100);
     isRecording=true;
     document.getElementById('export-btn').classList.add('recording');
     document.getElementById('export-btn').textContent='⬛ stop & save';
     setStatus('rec','recording…');
     const parsed=parseGroove(editor.value);
-    const ms=(60/(parsed.bpm||120))*4*8*1000;
-    setTimeout(()=>{if(isRecording)stopRecording();},ms);
+    setTimeout(()=>{if(isRecording)stopRecording();},(60/(parsed.bpm||120))*4*8*1000);
   }catch(e){setStatus('err','recording not supported');}
 }
 function stopRecording(){
-  if(!isRecording)return;
-  isRecording=false;
+  if(!isRecording)return;isRecording=false;
   if(mediaRecorder&&mediaRecorder.state!=='inactive')mediaRecorder.stop();
-  if(recordingDest)masterGain.disconnect(recordingDest);
-  recordingDest=null;
+  if(recordingDest)masterGain.disconnect(recordingDest);recordingDest=null;
   document.getElementById('export-btn').classList.remove('recording');
   document.getElementById('export-btn').textContent='⬤ export';
   setStatus('ok',playing?'running':'idle');
@@ -707,33 +833,27 @@ function finishExport(){
   const blob=new Blob(recordedChunks,{type:recordedChunks[0].type||'audio/webm'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');a.href=url;a.download='groove-export.webm';
-  document.body.appendChild(a);a.click();document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
 }
 
 // ── UI ────────────────────────────────────────────────────────────────────────
 function setStatus(cls,msg){
-  const el=document.getElementById('status');
-  el.className='status '+(cls||'');el.textContent=msg;
+  const el=document.getElementById('status');el.className='status '+(cls||'');el.textContent=msg;
 }
 function runCode(){
   initAC();if(ac.state==='suspended')ac.resume();
   document.getElementById('error-bar').textContent='';
   try{
     const parsed=parseGroove(editor.value);
-    if(!parsed.tracks.length){setStatus('err','no tracks — start a line with >');return;}
+    if(!parsed.tracks.length){setStatus('err','no tracks — start with >');return;}
     startTracks(parsed);
-  }catch(e){
-    document.getElementById('error-bar').textContent='error: '+e.message;
-    setStatus('err','error');
-  }
+  }catch(e){document.getElementById('error-bar').textContent='error: '+e.message;setStatus('err','error');}
 }
 function renderTrackList(){
   const el=document.getElementById('track-list');
   if(!tracks.length){el.innerHTML='<span style="font-size:10px;color:var(--muted)">press run to start</span>';return;}
   el.innerHTML=tracks.map(tr=>{
-    const n=Math.min(tr.seq.length,16);
-    const spd=tr.speed!==1?` ×${tr.speed}`:'';
+    const n=Math.min(tr.seq.length,16);const spd=tr.speed!==1?` ×${tr.speed}`:'';
     const steps=Array(n).fill(0).map((_,i)=>`<div class="tstep" id="ts-${tr.id}-${i}" style="background:${tr.seq[i]?.type!=='rest'?tr.color+'55':'var(--border2)'}"></div>`).join('');
     return`<div class="tp"><div class="tdot" style="background:${tr.color}"></div><span class="tname" style="color:${tr.color}">#${tr.id+1} ${tr.wave}${spd}</span><div class="tsteps">${steps}</div></div>`;
   }).join('');
@@ -748,22 +868,17 @@ function updateTStep(tr,si){
 function ins(text){
   const pos=editor.selectionStart;
   editor.value=editor.value.slice(0,pos)+'\n'+text+editor.value.slice(pos);
-  editor.selectionStart=editor.selectionEnd=pos+1+text.length;
-  editor.focus();
+  editor.selectionStart=editor.selectionEnd=pos+1+text.length;editor.focus();
 }
 function insertNote(name){
-  const pos=editor.selectionStart;
-  const before=editor.value.slice(0,pos);
+  const pos=editor.selectionStart;const before=editor.value.slice(0,pos);
   const sep=before.length>0&&!before.endsWith(' ')&&!before.endsWith('\n')?' ':'';
   editor.value=before+sep+name+editor.value.slice(pos);
-  editor.selectionStart=editor.selectionEnd=pos+sep.length+name.length;
-  editor.focus();
+  editor.selectionStart=editor.selectionEnd=pos+sep.length+name.length;editor.focus();
 }
 editor.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runCode();}
 });
-
-// drag and drop
 const dropArea=document.getElementById('drop-area');
 dropArea.addEventListener('dragover',e=>{e.preventDefault();dropArea.classList.add('drag');});
 dropArea.addEventListener('dragleave',()=>dropArea.classList.remove('drag'));
@@ -787,28 +902,20 @@ function drawViz(){
     const y=H*0.5+Math.sin(vizT*1.4+n.midi*0.35)*H*0.3;
     const r=Math.max(2,(1-age)*16*n.vol*(devicePixelRatio||1));
     vc.beginPath();vc.arc(x,y,r,0,Math.PI*2);
-    vc.fillStyle=n.color+Math.floor((1-age)*210).toString(16).padStart(2,'0');
-    vc.fill();
+    vc.fillStyle=n.color+Math.floor((1-age)*210).toString(16).padStart(2,'0');vc.fill();
     if(age<0.25){vc.shadowColor=n.color;vc.shadowBlur=r*2*(1-age);vc.beginPath();vc.arc(x,y,r*0.35,0,Math.PI*2);vc.fillStyle=n.color;vc.fill();vc.shadowBlur=0;}
   });
-  // beat flash
   if(playing&&tracks.length){
     const parsed=parseGroove(editor.value);
     const beatDur=60/(parsed.bpm||120);
     const beatPhase=(now%beatDur)/beatDur;
-    if(beatPhase<0.08){
-      document.getElementById('beat-flash').style.opacity=String((1-beatPhase/0.08)*0.6);
-    }else{document.getElementById('beat-flash').style.opacity='0';}
+    document.getElementById('beat-flash').style.opacity=beatPhase<0.08?String((1-beatPhase/0.08)*0.5):'0';
   }
-  // playhead for backing track
   if(backingActive&&sampleDuration>0){
     const elapsed=(now-backingStartTime)%sampleDuration;
-    const pct=elapsed/sampleDuration;
-    const wrap=document.getElementById('viz-wrap');
-    const pw=wrap.offsetWidth;
-    document.getElementById('playhead').style.left=(pct*pw)+'px';
+    const pw=document.getElementById('viz-wrap').offsetWidth;
+    document.getElementById('playhead').style.left=((elapsed/sampleDuration)*pw)+'px';
   }
-  // recording dot
   if(isRecording){
     vc.fillStyle=`rgba(255,196,74,${0.5+Math.sin(vizT*4)*0.4})`;
     vc.beginPath();vc.arc(W-18*(devicePixelRatio||1),14*(devicePixelRatio||1),5*(devicePixelRatio||1),0,Math.PI*2);vc.fill();
@@ -816,8 +923,7 @@ function drawViz(){
 }
 
 // ── KEYBOARD ──────────────────────────────────────────────────────────────────
-const OCTAVES=[2,3,4,5,6];
-const TOTAL_WHITE=OCTAVES.length*7;
+const OCTAVES=[2,3,4,5,6];const TOTAL_WHITE=OCTAVES.length*7;
 let kbHover=null,kbW2,kbH2,wKey,hKey,bKeyH,bKeyW;
 function drawKb(){
   kbW2=kbCanvas.width=kbCanvas.offsetWidth*(devicePixelRatio||1);
@@ -825,55 +931,60 @@ function drawKb(){
   wKey=kbW2/TOTAL_WHITE;hKey=kbH2*0.88;bKeyH=hKey*0.62;bKeyW=wKey*0.58;
   kc.fillStyle='#040410';kc.fillRect(0,0,kbW2,kbH2);
   let wi=0;
-  OCTAVES.forEach(oct=>{
-    NATURALS.forEach((note,ni)=>{
-      const x=wi*wKey,fn=note+oct,isC=note==='C',isH=kbHover===fn;
-      kc.fillStyle=isH?'#a57fff':isC?'#a06820':'#16112a';
-      if(kc.roundRect){kc.beginPath();kc.roundRect(x+1,1,wKey-2,hKey-2,[0,0,5,5]);kc.fill();}
-      else kc.fillRect(x+1,1,wKey-2,hKey-2);
-      kc.strokeStyle='rgba(255,255,255,0.04)';kc.lineWidth=0.5;kc.strokeRect(x+1,1,wKey-2,hKey-2);
-      const fs=Math.max(7,Math.floor(wKey*0.27/(devicePixelRatio||1)));
-      kc.fillStyle=isH?'#000':isC?'rgba(255,196,74,0.6)':'rgba(165,127,255,0.38)';
-      kc.font=`${fs}px 'JetBrains Mono',monospace`;kc.textAlign='center';
-      kc.fillText(fn,x+wKey/2,hKey-7);wi++;
-    });
-  });
+  OCTAVES.forEach(oct=>{NATURALS.forEach((note,ni)=>{
+    const x=wi*wKey,fn=note+oct,isC=note==='C',isH=kbHover===fn;
+    // Highlight scale notes if key detected
+    const inScale=detectedKey&&isNoteInKey(note,detectedKey);
+    kc.fillStyle=isH?'#a57fff':isC?'#a06820':inScale?'#1e1035':'#16112a';
+    if(kc.roundRect){kc.beginPath();kc.roundRect(x+1,1,wKey-2,hKey-2,[0,0,5,5]);kc.fill();}
+    else kc.fillRect(x+1,1,wKey-2,hKey-2);
+    kc.strokeStyle=inScale&&!isH?'rgba(165,127,255,0.2)':'rgba(255,255,255,0.04)';
+    kc.lineWidth=0.5;kc.strokeRect(x+1,1,wKey-2,hKey-2);
+    const fs=Math.max(7,Math.floor(wKey*0.27/(devicePixelRatio||1)));
+    kc.fillStyle=isH?'#000':isC?'rgba(255,196,74,0.6)':inScale?'rgba(165,127,255,0.55)':'rgba(165,127,255,0.28)';
+    kc.font=`${fs}px 'JetBrains Mono',monospace`;kc.textAlign='center';
+    kc.fillText(fn,x+wKey/2,hKey-7);wi++;
+  });});
   wi=0;
-  OCTAVES.forEach(oct=>{
-    NATURALS.forEach((note,ni)=>{
-      if(ni<6&&NAT_SEMI[ni+1]-NAT_SEMI[ni]===2){
-        const bx=wi*wKey+wKey-bKeyW/2,sn=NOTE_NAMES[NAT_SEMI[ni]+1]+oct,isH=kbHover===sn;
-        kc.fillStyle=isH?'#a57fff':'#07070f';
-        if(kc.roundRect){kc.beginPath();kc.roundRect(bx,0,bKeyW,bKeyH,[0,0,5,5]);kc.fill();}
-        else kc.fillRect(bx,0,bKeyW,bKeyH);
-        kc.strokeStyle='rgba(255,255,255,0.06)';kc.lineWidth=0.5;kc.strokeRect(bx,0,bKeyW,bKeyH);
-        const fs2=Math.max(6,Math.floor(wKey*0.21/(devicePixelRatio||1)));
-        kc.fillStyle=isH?'#000':'rgba(165,127,255,0.3)';
-        kc.font=`${fs2}px 'JetBrains Mono',monospace`;kc.textAlign='center';
-        kc.fillText(sn,bx+bKeyW/2,bKeyH-5);
-      }
-      wi++;
-    });
-  });
+  OCTAVES.forEach(oct=>{NATURALS.forEach((note,ni)=>{
+    if(ni<6&&NAT_SEMI[ni+1]-NAT_SEMI[ni]===2){
+      const bx=wi*wKey+wKey-bKeyW/2,sn=NOTE_NAMES[NAT_SEMI[ni]+1]+oct,isH=kbHover===sn;
+      const inScale=detectedKey&&isNoteInKey(NOTE_NAMES[NAT_SEMI[ni]+1],detectedKey);
+      kc.fillStyle=isH?'#a57fff':inScale?'#14082a':'#07070f';
+      if(kc.roundRect){kc.beginPath();kc.roundRect(bx,0,bKeyW,bKeyH,[0,0,5,5]);kc.fill();}
+      else kc.fillRect(bx,0,bKeyW,bKeyH);
+      kc.strokeStyle='rgba(255,255,255,0.06)';kc.lineWidth=0.5;kc.strokeRect(bx,0,bKeyW,bKeyH);
+      const fs2=Math.max(6,Math.floor(wKey*0.21/(devicePixelRatio||1)));
+      kc.fillStyle=isH?'#000':inScale?'rgba(165,127,255,0.5)':'rgba(165,127,255,0.25)';
+      kc.font=`${fs2}px 'JetBrains Mono',monospace`;kc.textAlign='center';
+      kc.fillText(sn,bx+bKeyW/2,bKeyH-5);
+    }
+    wi++;
+  });});
 }
+
+function isNoteInKey(noteName,key){
+  if(!key)return false;
+  const intervals=key.mode==='major'?[0,2,4,5,7,9,11]:[0,2,3,5,7,8,10];
+  const noteIdx=NOTE_NAMES.indexOf(noteName);
+  if(noteIdx<0)return false;
+  const rel=((noteIdx-key.rootIdx)+12)%12;
+  return intervals.includes(rel);
+}
+
 function getKbNote(px,py){
   const x=px*(devicePixelRatio||1),y=py*(devicePixelRatio||1);
   if(y<bKeyH){
     let wi2=0;
-    for(let oi=0;oi<OCTAVES.length;oi++){
-      for(let ni=0;ni<NATURALS.length;ni++){
-        if(ni<6&&NAT_SEMI[ni+1]-NAT_SEMI[ni]===2){
-          const bx=wi2*wKey+wKey-bKeyW/2;
-          if(x>=bx&&x<=bx+bKeyW)return NOTE_NAMES[NAT_SEMI[ni]+1]+OCTAVES[oi];
-        }
-        wi2++;
-      }
-    }
+    for(let oi=0;oi<OCTAVES.length;oi++){for(let ni=0;ni<NATURALS.length;ni++){
+      if(ni<6&&NAT_SEMI[ni+1]-NAT_SEMI[ni]===2){
+        const bx=wi2*wKey+wKey-bKeyW/2;
+        if(x>=bx&&x<=bx+bKeyW)return NOTE_NAMES[NAT_SEMI[ni]+1]+OCTAVES[oi];
+      }wi2++;
+    }}
   }
-  const wi3=Math.floor(x/wKey);
-  const oi2=Math.floor(wi3/7),ni2=wi3%7;
-  if(oi2<OCTAVES.length)return NATURALS[ni2]+OCTAVES[oi2];
-  return null;
+  const wi3=Math.floor(x/wKey);const oi2=Math.floor(wi3/7),ni2=wi3%7;
+  if(oi2<OCTAVES.length)return NATURALS[ni2]+OCTAVES[oi2];return null;
 }
 function previewNote(name){
   initAC();if(ac.state==='suspended')ac.resume();
@@ -881,34 +992,29 @@ function previewNote(name){
   const midi=noteToMidi(m[1],parseInt(m[2]));if(midi<0)return;
   const osc=ac.createOscillator(),g=ac.createGain();
   osc.type='sine';osc.frequency.value=midiToFreq(midi);
-  g.gain.setValueAtTime(0,ac.currentTime);
-  g.gain.linearRampToValueAtTime(0.12,ac.currentTime+0.01);
+  g.gain.setValueAtTime(0,ac.currentTime);g.gain.linearRampToValueAtTime(0.12,ac.currentTime+0.01);
   g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.5);
   osc.connect(g);g.connect(masterComp||ac.destination);
   osc.start();osc.stop(ac.currentTime+0.55);
   vizNotes.push({midi,startTime:ac.currentTime,endTime:ac.currentTime+0.5,color:'#a57fff',vol:0.6});
 }
 kbCanvas.addEventListener('mousemove',e=>{
-  const r=kbCanvas.getBoundingClientRect();
-  const n=getKbNote(e.clientX-r.left,e.clientY-r.top);
+  const r=kbCanvas.getBoundingClientRect();const n=getKbNote(e.clientX-r.left,e.clientY-r.top);
   const hint=document.getElementById('kb-hint');
-  hint.textContent=n?'→ '+n+' — click to insert':'hover to preview · click to insert';
+  hint.textContent=n?`→ ${n}${detectedKey&&isNoteInKey(n.replace(/\d/,''),detectedKey)?' ✓ in key':''} — click to insert`:'hover to preview · click to insert';
   hint.style.color=n?'var(--purple)':'var(--dim)';
   if(kbHover!==n){kbHover=n;drawKb();}
 });
 kbCanvas.addEventListener('mouseleave',()=>{
   document.getElementById('kb-hint').textContent='hover to preview · click to insert';
-  document.getElementById('kb-hint').style.color='var(--dim)';
-  kbHover=null;drawKb();
+  document.getElementById('kb-hint').style.color='var(--dim)';kbHover=null;drawKb();
 });
 kbCanvas.addEventListener('click',e=>{
-  const r=kbCanvas.getBoundingClientRect();
-  const n=getKbNote(e.clientX-r.left,e.clientY-r.top);
+  const r=kbCanvas.getBoundingClientRect();const n=getKbNote(e.clientX-r.left,e.clientY-r.top);
   if(n){insertNote(n);previewNote(n);}
 });
 window.addEventListener('resize',()=>{drawKb();if(sampleBuffer)drawWaveform(sampleBuffer);});
-drawKb();
-drawViz();
+drawKb();drawViz();
 </script>
 </body>
 </html>
